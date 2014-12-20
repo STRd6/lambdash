@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm -f lambda.zip
+zip -r -9 lambda.zip *

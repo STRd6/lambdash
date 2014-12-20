@@ -1,0 +1,32 @@
+{
+  "name": "lambdash",
+  "version": "0.0.0",
+  "description": "AWS lambda utility to handle incoming S3 uploads, verify SHA1 hash, and publish to a public folder.",
+  "main": "index.js",
+  "scripts": {
+    "test": "script/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/STRd6/lambdash.git"
+  },
+  "keywords": [
+    "aws-lambda",
+    "s3",
+    "aws"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/STRd6/lambdash/issues"
+  },
+  "homepage": "https://github.com/STRd6/lambdash",
+  "dependencies": {
+    "aws-sdk": "^2.1.4",
+    "q": "^1.1.2"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.8.0",
+    "mocha": "^2.0.1"
+  }
+}
