@@ -86,22 +86,34 @@ Set up a whole distributed uploader app
         }
       """
 
-    createRole = (name) ->
-      params =
-        AssumeRolePolicyDocument: rolePolicy(config)
-        RoleName: name
+    ensureRole = (name) ->
+      console.log "Checking role: #{name}"
+      Q.ninvoke(IAM, 'getRole', RoleName: name)
+      .fail (error) ->
+        params =
+          AssumeRolePolicyDocument: rolePolicy(config)
+          RoleName: name
 
-      console.log "Creating role:", params
+        console.log "Creating role:", params
 
-      Q.ninvoke(IAM, 'createRole', params)
+        Q.ninvoke(IAM, 'createRole', params)
+      .then ->
+        params =
+          PolicyDocument: rolePermissions(config)
+          PolicyName: "lambda_policy"
+          RoleName: name
 
-    uploadFunction = (name) ->
+        console.log "Attaching role policy:", params
+
+        Q.ninvoke(IAM, 'putRolePolicy', params)
+
+    uploadFunction = (name, role) ->
       params =
         FunctionName: name
         FunctionZip: fs.readFileSync("./lambda.zip")
         Handler: "handler"
         Mode: "event"
-        Role: "arn:aws:iam::186123361267:role/yoloswagwat-lambdarole"
+        Role: role
         Runtime: "nodejs"
 
       console.log "Creating lambda:", params
@@ -138,15 +150,16 @@ Create a bucket for the processed uploads (`targetbucket`)
 
 Create lambda role.
 
-    createRole("#{prefix}lambdarole")
+    ensureRole("#{prefix}lambdarole")
     .then log, error
 
 Create a lambda function to process the uploads.
 
-    uploadFunction("lambdoodle")
+    uploadFunction("lambdoodle", "arn:aws:iam::186123361267:role/yoloswagwat-lambdarole")
     .then log, error
 
 Add a notification trigger on the incoming bucket to invoke a lambda function
+
 
 
 Create a CloudFront distribution to serve `targetbucket`
