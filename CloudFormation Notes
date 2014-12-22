@@ -1,0 +1,12 @@
+CloudFormation Notes
+====================
+
+CloudFormation can't create a new Route 53 DNS zone for you, you'll need to create one manually.
+
+Can't create Route 53 DNS record sets if the record already exists.
+
+CloudFront distributions and Route 53 record sets take a while to create and to modify. If the resource isn't being modified during an update it is fast.
+
+You can't actually create a lambda function through CloudFormation at this time.
+
+If an update fails and rolls back it may leave orphan buckets if they have `"DeletionPolicy" : "Retain"`
