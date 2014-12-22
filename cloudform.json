@@ -5,6 +5,11 @@
         "Type" : "String",
         "Default" : "data.danielx.net",
         "Description" : "Public domain name for exposed S3 bucket."
+      },
+      "AuthApp" : {
+        "Type" : "String",
+        "Default" : "hidden-sierra-1030.herokuapp.com",
+        "Description" : "Auth app server."
       }
     },
     "Resources" : {
@@ -70,6 +75,34 @@
           }
         }
       },
+      "UploadUser" : {
+        "Type": "AWS::IAM::User",
+        "Properties": {
+          "Policies": [{
+            "PolicyName": "FullIncomingBucketAccess",
+            "PolicyDocument" : {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "s3:*",
+                  "Resource": [
+                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "IncomingBucket" } , "/" ]]},
+                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "IncomingBucket" } , "/*" ]]}
+                  ]
+                }
+              ]
+            }
+          }]
+        }
+      },
+      "UploadUserAccessKey": {
+        "Type": "AWS::IAM::AccessKey",
+        "Properties": {
+            "Status": "Active",
+            "UserName": { "Ref" : "UploadUser" }
+        }
+      },
       "CloudFrontDistribution" : {
           "Type" : "AWS::CloudFront::Distribution",
           "Properties" : {
@@ -106,25 +139,40 @@
         "Type" : "AWS::Route53::RecordSetGroup",
         "Properties" : {
           "HostedZoneName": { "Fn::Join" : ["", [ { "Ref" : "PublicDomain" }, "." ] ] },
-          "RecordSets" : [{
-            "Name" : { "Ref" : "PublicDomain" },
-            "Type" : "A",
-            "AliasTarget" : {
-              "HostedZoneId" : "Z2FDTNDATAQYW2",
-              "DNSName" : { "Fn::GetAtt" : ["CloudFrontDistribution", "DomainName"] }
+          "RecordSets" : [
+            {
+              "Name" : { "Ref" : "PublicDomain" },
+              "Type" : "A",
+              "AliasTarget" : {
+                "HostedZoneId" : "Z2FDTNDATAQYW2",
+                "DNSName" : { "Fn::GetAtt" : ["CloudFrontDistribution", "DomainName"] }
+              }
+            }, {
+              "Name" : { "Fn::Join" : [".", [ "auth", { "Ref" : "PublicDomain" } ] ] },
+              "Type" : "CNAME",
+              "TTL": 60,
+              "ResourceRecords" : [ { "Ref" : "AuthApp" } ]
             }
-          }]
+          ]
         }
       }
     },
     "Outputs" : {
-        "IncomingBucketSecureURL" : {
-              "Value" : { "Fn::Join" : [ "", [ "https://", { "Fn::GetAtt" : [ "IncomingBucket", "DomainName" ] } ] ] },
-              "Description" : "Name of incoming bucket for uploads"
-        },
-        "S3BucketSecureURL" : {
-              "Value" : { "Fn::Join" : [ "", [ "https://", { "Fn::GetAtt" : [ "S3Bucket", "DomainName" ] } ] ] },
-              "Description" : "Name of S3 bucket to hold website content"
-        }
+      "IncomingBucketSecureURL" : {
+        "Value" : { "Fn::Join" : [ "", [ "https://", { "Fn::GetAtt" : [ "IncomingBucket", "DomainName" ] } ] ] },
+        "Description" : "Name of incoming bucket for uploads"
+      },
+      "S3BucketSecureURL" : {
+        "Value" : { "Fn::Join" : [ "", [ "https://", { "Fn::GetAtt" : [ "S3Bucket", "DomainName" ] } ] ] },
+        "Description" : "Name of S3 bucket to hold website content"
+      },
+      "AccessKey": {
+        "Value": { "Ref" : "UploadUserAccessKey" },
+        "Description" : "Heroku app needs this key"
+      },
+      "SecretKey": {
+        "Value": { "Fn::GetAtt" : [ "UploadUserAccessKey", "SecretAccessKey" ] },
+        "Description" : "Heroku app needs this key"
+      }
     }
   }
