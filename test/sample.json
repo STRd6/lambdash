@@ -20,16 +20,16 @@
         "s3SchemaVersion": "1.0",
         "configurationId": "testConfigRule",
         "bucket": {
-          "name": "sourcebucket",
+          "name": "cloudcontentaddressablestorage-incomingbucket-1bokzi8lfm9kl",
           "ownerIdentity": {
             "principalId": "A3NL1KOZZKExample"
           },
-          "arn": "arn:aws:s3:::mybucket"
+          "arn": "arn:aws:s3:::cloudcontentaddressablestorage-incomingbucket-1bokzi8lfm9kl"
         },
         "object": {
-          "key": "HappyFace.jpg",
-          "size": 1024,
-          "eTag": "d41d8cd98f00b204e9800998ecf8427e"
+          "key": "18894/test.wat",
+          "size": 14,
+          "eTag": "08b58b1b6897dd912114343dd00874ec"
         }
       }
     }
