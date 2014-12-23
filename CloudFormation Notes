@@ -10,3 +10,7 @@ CloudFront distributions and Route 53 record sets take a while to create and to 
 You can't actually create a lambda function through CloudFormation at this time.
 
 If an update fails and rolls back it may leave orphan buckets if they have `"DeletionPolicy" : "Retain"`
+
+If S3 buckets have notifications attached to them that aren't managed through cloudformation they keep them during updates.
+
+Permissions for S3 Buckets often need to end with /* for ObjectGet and ObjectPut

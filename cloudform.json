@@ -174,16 +174,17 @@
                     "s3:GetObject"
                   ],
                   "Resource": [
-                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "IncomingBucket" } ]]}
+                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "IncomingBucket" }, "/*" ]]}
                   ]
                 },
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "s3:*"
+                    "s3:GetObject",
+                    "s3:PutObject"
                   ],
                   "Resource": [
-                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Bucket" } ]]}
+                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Bucket" }, "/*" ]]}
                   ]
                 }
               ]
