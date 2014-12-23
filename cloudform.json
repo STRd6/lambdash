@@ -131,7 +131,7 @@
                 {
                   "Effect": "Allow",
                   "Resource": "*",
-                  "Action": [ "lambda:InvokeAsync" ]
+                  "Action": [ "lambda:InvokeFunction" ]
                 }
               ]
             }
@@ -180,8 +180,7 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "s3:GetObject",
-                    "s3:PutObject"
+                    "s3:*"
                   ],
                   "Resource": [
                     { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Bucket" } ]]}
