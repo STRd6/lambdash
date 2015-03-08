@@ -35,7 +35,7 @@
           },
           "LoggingConfiguration" : {
             "DestinationBucketName" : { "Ref" : "LogBucket"},
-            "LogFilePrefix" : "incoming"
+            "LogFilePrefix" : "incoming/"
           }
         },
         "DeletionPolicy" : "Retain"
@@ -56,7 +56,7 @@
           },
           "LoggingConfiguration" : {
             "DestinationBucketName" : { "Ref" : "LogBucket"},
-            "LogFilePrefix" : "mainS3"
+            "LogFilePrefix" : "data/"
           }
         },
         "DeletionPolicy" : "Retain"
@@ -206,7 +206,7 @@
                   "Logging" : {
                       "IncludeCookies" : "false",
                       "Bucket" : { "Fn::GetAtt" : [ "LogBucket", "DomainName" ] },
-                      "Prefix" : "cloudfront"
+                      "Prefix" : "cloudfront/"
                   },
                   "Aliases" : [ { "Ref" : "PublicDomain" } ],
                   "DefaultCacheBehavior" : {
