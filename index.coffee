@@ -7,7 +7,12 @@ S3 = new AWS.S3
 Crypto = require "crypto"
 Q = require "q"
 
-TARGET_BUCKET = "cloudcontentaddressablestorage-s3bucket-ovcvbjoesktq"
+TARGET_BUCKET = "pixieengine-s3bucket-1nlk8uez22kk7"
+HASH_ALGORITHM = "sha256"
+DIGEST_ENCODING = "base64"
+
+base64URLEncode = (base64String) ->
+  base64String.replace(/\+/g, "-").replace(/\//g, "_").replace(/\=/g, "")
 
 exports.handler = (event, context) ->
   ERR = (error) ->
@@ -30,7 +35,7 @@ exports.handler = (event, context) ->
 
   Q.ninvoke(S3, "getObject", params)
   .then (data) ->
-    shasum = Crypto.createHash 'sha1'
+    shasum = Crypto.createHash HASH_ALGORITHM
 
     console.log('CONTENT TYPE:', data.ContentType)
 
@@ -38,7 +43,7 @@ exports.handler = (event, context) ->
 
     shasum.update data.Body
 
-    sha = shasum.digest("hex")
+    sha = base64URLEncode shasum.digest(DIGEST_ENCODING)
 
     console.log("DIGEST:", sha)
 
